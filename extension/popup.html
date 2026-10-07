@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PayGuard - Checkout Safety</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 380px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 13px;
+      line-height: 1.4;
+      padding: 16px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-icon {
+      font-size: 20px;
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: -0.01em;
+    }
+    .active-pill {
+      font-size: 11px;
+      font-weight: 600;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .input-field {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #f8fafc;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .input-field:focus {
+      border-color: #38bdf8;
+    }
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.15s ease, transform 0.05s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-primary {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #0369a1;
+    }
+    .quick-tests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover {
+      background: #334155;
+      color: #f8fafc;
+    }
+    .result-box {
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .result-box.safe {
+      display: block;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid #22c55e;
+      color: #86efac;
+    }
+    .result-box.threat {
+      display: block;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+    .result-box.loading {
+      display: block;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      text-align: center;
+    }
+    .result-header {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .result-details {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.4;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+    .settings-accordion {
+      border-top: 1px solid #1e293b;
+      padding-top: 10px;
+    }
+    .accordion-toggle {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 4px 0;
+    }
+    .accordion-toggle:hover {
+      color: #f8fafc;
+    }
+    .accordion-content {
+      display: none;
+      margin-top: 8px;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .accordion-content.open {
+      display: flex;
+    }
+    .hint-text {
+      font-size: 11px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <span class="brand-title">PayGuard</span>
+    </div>
+    <span class="active-pill">Safe Browsing v4</span>
+  </div>
+
+  <div class="section-title">Manual Checkout URL Check</div>
+  <div class="input-group">
+    <input
+      type="url"
+      id="urlInput"
+      class="input-field"
+      placeholder="Paste payment or checkout URL..."
+      autocomplete="off"
+    />
+    <button type="button" id="checkBtn" class="btn btn-primary">
+      <span>🔍</span>
+      <span>Verify Checkout Safety</span>
+    </button>
+  </div>
+
+  <div class="section-title" style="margin-bottom: 6px;">Quick Test Scenarios</div>
+  <div class="quick-tests">
+    <button type="button" class="chip" id="testSafe">✅ Safe Store</button>
+    <button type="button" class="chip" id="testPhishing">⚠️ Phishing Test</button>
+    <button type="button" class="chip" id="testMalware">⚠️ Malware Test</button>
+    <button type="button" class="chip" id="testCurrentTab">📑 Current Tab</button>
+  </div>
+
+  <!-- Scan Result Container -->
+  <div id="resultBox" class="result-box">
+    <div id="resultHeader" class="result-header"></div>
+    <div id="resultDetails" class="result-details"></div>
+  </div>
+
+  <!-- Settings Accordion -->
+  <div class="settings-accordion">
+    <button type="button" id="toggleSettings" class="accordion-toggle">
+      <span>⚙️ Google Safe Browsing API Key</span>
+      <span id="accordionArrow">▼</span>
+    </button>
+    <div id="settingsContent" class="accordion-content">
+      <div class="hint-text">
+        Replace <code>"YOUR_API_KEY"</code> in <code>background.js</code> or enter your Google Cloud API Key below:
+      </div>
+      <input
+        type="password"
+        id="apiKeyInput"
+        class="input-field"
+        placeholder="AIzaSy... (optional override)"
+      />
+      <button type="button" id="saveKeyBtn" class="btn" style="background: #334155; color: #f8fafc;">
+        Save Key
+      </button>
+      <div id="keyStatus" class="hint-text" style="color: #38bdf8;"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

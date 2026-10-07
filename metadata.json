@@ -1,0 +1,6 @@
+{
+  "name": "PayGuard: Payment Safety Guard Chrome Extension",
+  "description": "Manifest V3 Chrome Extension that guards checkout and payment pages using Google Safe Browsing API threat detection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
